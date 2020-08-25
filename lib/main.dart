@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
+import 'strings.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-void main() {
-  runApp(MyApp());
-}
- class MyApp extends StatelessWidget {
-   @override
-   Widget build(BuildContext context) {
-     return MaterialApp(
-       title: 'Sleep Tacker',
-       theme: ThemeData.dark(
-       ),
-       home: MyHomepage(title:'Sleep Tracker'),
-     );
-   }
- }
+void main() => runApp(MyApp());
 
- class MyHomepage extends StatefulWidget {
-  MyHomepage({Key key,this.title}):super(key:key);
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sleep Time',
+      theme: ThemeData.dark(
+
+      ),
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(title: 'Sleep Time'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
-   @override
-   _MyHomepageState createState() => _MyHomepageState();
- }
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
 
- class _MyHomepageState extends State<MyHomepage> {
+class _MyHomePageState extends State<MyHomePage> {
 
-  TextEditingController _c;
-  double _opacity =0.0;
+  TextEditingController _c ;
+  double _opacity = 0.0;
   var cycles = {'firstCycle':'','secondCycle':'', 'thirdCycle':'', 'forthCycle':'', 'fifthCycle':'', 'sixthCycle':''};
-
 
   @override
   void initState() {
@@ -45,8 +46,9 @@ void main() {
     _c?.dispose();
     super.dispose();
   }
+
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
 
     cyclesMeasure() {
 
@@ -72,8 +74,148 @@ void main() {
 
     }
 
+    showSleepTime(String sleepLength, double fontSize, int color, bool sleepTime) {
 
+      if (sleepTime = true) {
+
+        return RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(text: sleepLength,
+                  style:
+                  TextStyle(fontWeight:
+                  FontWeight.bold,
+                      color: Color(color),
+                      fontSize: fontSize)),
+            ],
+          ),
+        );
+
+      } else {
+
+        return AutoSizeText(
+          Strings.topAutosizeText,
+          style: TextStyle(fontSize: 20),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+        );
+
+      }
+    }
+
+    showContainer(String cycleNumber, String sleepLength, double fontSize, int color) {
+      return TableRow(children: [
+        TableCell(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              new Text(cycleNumber, style: TextStyle(fontSize: 22), textAlign: TextAlign.center,),
+              showSleepTime(sleepLength, fontSize, color, true),
+            ],
+          ),
+        )
+      ],);
+    }
+
+
+    showToast() {
+
+      Fluttertoast.showToast(
+          msg: "Cycles refreshed!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 15.0
+      );
+
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+
+        title: Text(widget.title),
+        centerTitle: true,
+      ),
+      body: Center(
+
+        child: Column(
+
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            AutoSizeText(
+              Strings.topAutosizeText,
+              style: TextStyle(fontSize: 22), textAlign: TextAlign.center,
+              maxLines: 2,
+              softWrap: true,
+            ),
+
+            const SizedBox(height: 30),
+
+            Container(child: Padding(padding: const EdgeInsets.fromLTRB(60.0, 30.0, 60.0, 30.0),
+              child: Table(
+                  children: [
+                    showContainer('First Cycle: ', cycles['firstCycle'], 22, 0xffb74093),
+                    showContainer('Second Cycle: ', cycles['secondCycle'], 22, 0xffc14f9f),
+                    showContainer('Third Cycle: ', cycles['thirdCycle'], 22, 0xff723e9c),
+                    showContainer('Fourth Cycle: ', cycles['forthCycle'], 22, 0xff7f45ae),
+                    showContainer('Fifth Cycle: ', cycles['fifthCycle'], 22, 0xff3e689c),
+                    showContainer('Sixth Cycle: ', cycles['sixthCycle'], 22, 0xff4574ae),
+                  ]
+              ),
+             ),
+            ),
+
+            RaisedButton(
+                onPressed: () {cyclesMeasure(); showToast();
+                setState((){
+                  _c.text = Strings.emptyValue;
+                  _opacity = _opacity == 0.0 ? 1.0 : 1.0;
+                  Strings.stateButtonText = Strings.updatedStateButtonText;
+                  Strings.topAutosizeText = Strings.updatedTopText;
+                  Strings.fallAsleepText = Strings.updatedFallAsleepText;
+                  Strings.slepCycleText = Strings.updatedSlepCycleText;
+                }
+                );
+                },
+                child: Text(
+                    Strings.stateButtonText, style: TextStyle(fontSize: 20))
+            ),
+            const SizedBox(height: 20),
+
+            AutoSizeText(
+              Strings.fallAsleepText,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+            ),
+
+            const SizedBox(height: 20),
+
+            AutoSizeText(
+              Strings.slepCycleText,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+            ),
+
+            const SizedBox(height: 20),
+
+            AnimatedOpacity(
+              duration: Duration(seconds: 1),
+              opacity: _opacity,
+              child: Text('🌙 🌙 🌙 🌙 🌙',
+                style: TextStyle(fontSize: 20),),
+            )
+
+          ],
+
+        ),
+
+      ),
+
+    );
   }
- }
 
-
+}
