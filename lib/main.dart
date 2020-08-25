@@ -205,7 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
             AnimatedOpacity(
               duration: Duration(seconds: 1),
               opacity: _opacity,
-              child: Text('🌙 🌙 🌙 🌙 🌙',
+              child: Text('🌙 🌙 🌙 ',
                 style: TextStyle(fontSize: 20),),
             )
 
